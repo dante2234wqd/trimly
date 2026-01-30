@@ -380,10 +380,24 @@ function SettingsRow({
   showArrow?: boolean;
   onClick?: () => void;
 }) {
+  const isClickable = !!onClick || showArrow;
+  
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (onClick && (e.key === "Enter" || e.key === " ")) {
+      e.preventDefault();
+      onClick();
+    }
+  };
+
   return (
-    <button
-      onClick={onClick}
-      className="flex items-center gap-4 w-full p-4 text-left hover:bg-muted/50 active:bg-muted transition-colors"
+    <div
+      onClick={isClickable && !rightContent ? onClick : undefined}
+      onKeyDown={isClickable && !rightContent ? handleKeyDown : undefined}
+      role={isClickable && !rightContent ? "button" : undefined}
+      tabIndex={isClickable && !rightContent ? 0 : undefined}
+      className={`flex items-center gap-4 w-full p-4 text-left transition-colors ${
+        isClickable ? "hover:bg-muted/50 active:bg-muted cursor-pointer" : ""
+      }`}
     >
       <div className="flex-shrink-0 w-10 h-10 rounded-[12px] bg-muted flex items-center justify-center text-primary">
         {icon}
@@ -393,7 +407,7 @@ function SettingsRow({
       {showArrow && (
         <ChevronRight size={20} className="flex-shrink-0 text-muted-foreground" />
       )}
-    </button>
+    </div>
   );
 }
 
