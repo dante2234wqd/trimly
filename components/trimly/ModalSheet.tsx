@@ -1,7 +1,7 @@
 "use client";
 
 import { ReactNode, useEffect } from "react";
-import { X } from "lucide-react";
+import { X } from "./Icons";
 
 interface ModalSheetProps {
   isOpen: boolean;

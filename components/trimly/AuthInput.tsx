@@ -1,7 +1,7 @@
 "use client";
 
 import { InputHTMLAttributes, forwardRef, useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff } from "./Icons";
 
 interface AuthInputProps extends InputHTMLAttributes<HTMLInputElement> {
   icon?: React.ReactNode;

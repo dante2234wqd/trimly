@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Mail, Lock } from "lucide-react";
+import { Mail, Lock } from "@/components/trimly/Icons";
 import { PrimaryButton } from "@/components/trimly";
 import { AuthInput } from "@/components/trimly/AuthInput";
 import { SocialButton } from "@/components/trimly/SocialButton";

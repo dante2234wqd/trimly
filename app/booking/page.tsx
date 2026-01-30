@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, User, Clock, Check, Star } from "lucide-react";
+import { ArrowLeft, User, Clock, Check, Star } from "@/components/trimly/Icons";
 import { Card, Badge, PrimaryButton } from "@/components/trimly";
 
 // Mock data

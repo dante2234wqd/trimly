@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { Check, X, AlertCircle, Info } from "lucide-react";
+import { Check, X, AlertCircle, Info } from "./Icons";
 
 interface ToastProps {
   isVisible: boolean;

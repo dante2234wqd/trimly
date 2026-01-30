@@ -1,6 +1,6 @@
 "use client";
 
-import { Home, Calendar, ShoppingBag, User } from "lucide-react";
+import { Home, Calendar, ShoppingBag, User } from "./Icons";
 
 interface NavItem {
   id: string;

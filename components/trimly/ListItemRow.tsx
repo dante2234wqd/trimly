@@ -1,7 +1,7 @@
 "use client";
 
 import { ReactNode } from "react";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight } from "./Icons";
 
 interface ListItemRowProps {
   title: string;
