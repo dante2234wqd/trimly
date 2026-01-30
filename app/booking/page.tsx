@@ -41,9 +41,9 @@ export default function BookingPage() {
   const canProceed = selectedServices.length > 0;
 
   return (
-    <div className="min-h-screen bg-background pb-32">
+    <div className="min-h-screen min-h-dvh w-full bg-[#E7ECF0] flex flex-col pb-32">
       {/* Top Bar */}
-      <header className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm">
+      <header className="sticky top-0 z-10 bg-[#E7ECF0]/95 backdrop-blur-sm">
         <div className="flex items-center justify-between px-4 py-4">
           <Link
             href="/"
@@ -65,7 +65,7 @@ export default function BookingPage() {
         </div>
       </header>
 
-      <main className="px-4 space-y-6">
+      <main className="flex-1 px-4 space-y-6">
         {/* Section Title */}
         <section>
           <h2 className="text-2xl font-bold text-foreground">
