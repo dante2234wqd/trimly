@@ -1,298 +1,203 @@
 "use client";
 
 import { useState } from "react";
-import {
-  AppShell,
-  TopBar,
-  Card,
-  PrimaryButton,
-  ListItemRow,
-  Badge,
-  StatCard,
-  AvatarRow,
-  FloatingBottomNav,
-  ModalSheet,
-  Toast,
-  SuccessPopup,
-} from "@/components/trimly";
-import {
-  Bell,
-  Scissors,
-  Clock,
-  Star,
-  Calendar,
-  MapPin,
-  CreditCard,
-  Settings,
-  TrendingUp,
-} from "lucide-react";
+import Link from "next/link";
+import { ArrowLeft, User, Clock, Check, Star } from "lucide-react";
+import { Card, Badge, PrimaryButton } from "@/components/trimly";
 
 // Mock data
-const upcomingAppointment = {
-  barber: "Marcus Johnson",
-  service: "Haircut + Beard Trim",
-  date: "Today, 2:30 PM",
-  location: "Downtown Studio",
-  price: "$45",
+const shopInfo = {
+  name: "Don Luis Barbería",
+  memberType: "VIP", // or "Regular"
 };
 
-const topBarbers = [
-  { name: "Marcus Johnson", rating: "4.9", specialty: "Fades & Designs", badge: "VIP" },
-  { name: "David Chen", rating: "4.8", specialty: "Classic Cuts", badge: null },
-  { name: "James Wilson", rating: "4.7", specialty: "Beard Styling", badge: null },
+const services = [
+  { id: 1, name: "Haircut", duration: "30 min", price: "$30" },
+  { id: 2, name: "Beard Trim", duration: "20 min", price: "$20" },
+  { id: 3, name: "Haircut + Beard", duration: "45 min", price: "$45" },
+  { id: 4, name: "Kids Cut", duration: "25 min", price: "$25" },
+  { id: 5, name: "Hot Towel Shave", duration: "30 min", price: "$35" },
+  { id: 6, name: "Hair Design", duration: "40 min", price: "$50" },
 ];
 
-const services = [
-  { name: "Haircut", price: "$30", duration: "30 min", icon: Scissors },
-  { name: "Beard Trim", price: "$15", duration: "15 min", icon: Scissors },
-  { name: "Full Service", price: "$45", duration: "45 min", icon: Star },
+const barbers = [
+  { id: 1, name: "Marcus", rating: 4.9, avatar: null },
+  { id: 2, name: "David", rating: 4.8, avatar: null },
+  { id: 3, name: "James", rating: 4.7, avatar: null },
+  { id: 4, name: "Carlos", rating: 4.9, avatar: null },
+  { id: 5, name: "Miguel", rating: 4.6, avatar: null },
 ];
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState("home");
-  const [showBookingSheet, setShowBookingSheet] = useState(false);
-  const [showToast, setShowToast] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false);
+  const [selectedServices, setSelectedServices] = useState<number[]>([]);
+  const [selectedBarber, setSelectedBarber] = useState<number | null>(null);
 
-  const handleBookNow = () => {
-    setShowBookingSheet(false);
-    setShowSuccess(true);
+  const toggleService = (id: number) => {
+    setSelectedServices((prev) =>
+      prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]
+    );
   };
 
+  const canProceed = selectedServices.length > 0;
+
   return (
-    <AppShell>
+    <div className="min-h-screen min-h-dvh w-full bg-[#E7ECF0] flex flex-col">
       {/* Top Bar */}
-      <TopBar
-        title="Trimly"
-        leftAction={
-          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-            <span className="font-bold text-primary text-sm">T</span>
-          </div>
-        }
-        rightAction={
+      <header className="sticky top-0 z-10 bg-[#E7ECF0]/95 backdrop-blur-sm">
+        <div className="flex items-center justify-between px-4 py-4">
           <button
-            onClick={() => setShowToast(true)}
             className="w-10 h-10 rounded-full bg-card shadow-soft flex items-center justify-center"
           >
-            <Bell size={20} className="text-foreground" />
+            <ArrowLeft size={20} className="text-foreground" />
           </button>
-        }
-      />
 
-      <main className="px-4 space-y-6">
-        {/* Welcome Section */}
-        <section>
-          <h2 className="text-2xl font-bold text-foreground mb-1">
-            Good afternoon, Alex
-          </h2>
-          <p className="text-muted-foreground">Ready for your next fresh cut?</p>
-        </section>
-
-        {/* Stats Row */}
-        <section className="grid grid-cols-2 gap-4">
-          <StatCard
-            icon={<Calendar size={20} />}
-            label="Appointments"
-            value="12"
-            trend={{ value: "3 this month", positive: true }}
-            accentColor="primary"
-          />
-          <StatCard
-            icon={<TrendingUp size={20} />}
-            label="Loyalty Points"
-            value="850"
-            trend={{ value: "50 to VIP", positive: true }}
-            accentColor="accent"
-          />
-        </section>
-
-        {/* Upcoming Appointment */}
-        <section>
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-lg font-semibold text-foreground">
-              Upcoming Appointment
-            </h3>
-            <Badge variant="success">Confirmed</Badge>
+          <div className="flex flex-col items-center">
+            <h1 className="text-lg font-bold text-foreground">{shopInfo.name}</h1>
+            <Badge variant={shopInfo.memberType === "VIP" ? "accent" : "muted"} size="sm">
+              {shopInfo.memberType}
+            </Badge>
           </div>
 
-          <Card className="space-y-4">
-            <AvatarRow
-              name={upcomingAppointment.barber}
-              subtitle={upcomingAppointment.service}
-              badge="VIP"
-              badgeVariant="accent"
-            />
-
-            <div className="flex items-center gap-4 text-sm text-muted-foreground">
-              <div className="flex items-center gap-1.5">
-                <Clock size={16} />
-                <span>{upcomingAppointment.date}</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <MapPin size={16} />
-                <span>{upcomingAppointment.location}</span>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between pt-2 border-t border-border">
-              <span className="text-lg font-bold text-foreground">
-                {upcomingAppointment.price}
-              </span>
-              <PrimaryButton size="sm" variant="secondary">
-                Reschedule
-              </PrimaryButton>
-            </div>
-          </Card>
-        </section>
-
-        {/* Top Barbers */}
-        <section>
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-lg font-semibold text-foreground">Top Barbers</h3>
-            <button className="text-sm text-primary font-medium">See all</button>
-          </div>
-
-          <Card padding="sm">
-            {topBarbers.map((barber, index) => (
-              <AvatarRow
-                key={barber.name}
-                name={barber.name}
-                subtitle={`${barber.specialty} • ${barber.rating} ★`}
-                badge={barber.badge || undefined}
-                badgeVariant="accent"
-                onClick={() => setShowBookingSheet(true)}
-                size="md"
-              />
-            ))}
-          </Card>
-        </section>
-
-        {/* Quick Services */}
-        <section>
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-lg font-semibold text-foreground">
-              Quick Book
-            </h3>
-          </div>
-
-          <div className="grid grid-cols-3 gap-3">
-            {services.map((service) => (
-              <Card
-                key={service.name}
-                className="text-center cursor-pointer hover:shadow-soft-lg transition-shadow"
-                onClick={() => setShowBookingSheet(true)}
-              >
-                <div className="w-10 h-10 rounded-[12px] bg-primary/10 flex items-center justify-center mx-auto mb-2">
-                  <service.icon size={20} className="text-primary" />
-                </div>
-                <p className="font-medium text-foreground text-sm">
-                  {service.name}
-                </p>
-                <p className="text-xs text-muted-foreground">{service.price}</p>
-              </Card>
-            ))}
-          </div>
-        </section>
-
-        {/* Settings List Demo */}
-        <section>
-          <h3 className="text-lg font-semibold text-foreground mb-3">
-            Quick Actions
-          </h3>
-          <Card padding="none">
-            <ListItemRow
-              title="Payment Methods"
-              subtitle="Manage your cards"
-              leftIcon={<CreditCard size={20} />}
-              showArrow
-              onClick={() => {}}
-            />
-            <div className="h-px bg-border mx-4" />
-            <ListItemRow
-              title="Preferences"
-              subtitle="Notifications, language"
-              leftIcon={<Settings size={20} />}
-              showArrow
-              onClick={() => {}}
-            />
-          </Card>
-        </section>
-
-        {/* Button Showcase */}
-        <section>
-          <h3 className="text-lg font-semibold text-foreground mb-3">
-            Book Your Next Cut
-          </h3>
-          <div className="space-y-3">
-            <PrimaryButton fullWidth onClick={() => setShowBookingSheet(true)}>
-              Book Appointment
-            </PrimaryButton>
-            <PrimaryButton fullWidth variant="accent">
-              Redeem VIP Reward
-            </PrimaryButton>
-          </div>
-        </section>
-      </main>
-
-      {/* Bottom Navigation */}
-      <FloatingBottomNav activeTab={activeTab} onTabChange={setActiveTab} />
-
-      {/* Booking Modal Sheet */}
-      <ModalSheet
-        isOpen={showBookingSheet}
-        onClose={() => setShowBookingSheet(false)}
-        title="Book Appointment"
-      >
-        <div className="space-y-4">
-          <AvatarRow
-            name="Marcus Johnson"
-            subtitle="Fades & Designs Specialist"
-            badge="VIP"
-            badgeVariant="accent"
-            size="lg"
-          />
-
-          <div className="space-y-2">
-            <h4 className="font-medium text-foreground">Select Service</h4>
-            {services.map((service) => (
-              <Card
-                key={service.name}
-                className="flex items-center justify-between cursor-pointer hover:bg-muted/50 transition-colors"
-              >
-                <div>
-                  <p className="font-medium text-foreground">{service.name}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {service.duration}
-                  </p>
-                </div>
-                <span className="font-semibold text-primary">{service.price}</span>
-              </Card>
-            ))}
-          </div>
-
-          <div className="pt-4">
-            <PrimaryButton fullWidth onClick={handleBookNow}>
-              Confirm Booking
-            </PrimaryButton>
+          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+            <User size={20} className="text-primary" />
           </div>
         </div>
-      </ModalSheet>
+      </header>
 
-      {/* Toast */}
-      <Toast
-        isVisible={showToast}
-        onClose={() => setShowToast(false)}
-        message="You have 2 new notifications"
-        variant="info"
-      />
+      <main className="flex-1 px-4 space-y-6 pb-32">
+        {/* Section Title */}
+        <section>
+          <h2 className="text-2xl font-bold text-foreground">
+            What are we doing today?
+          </h2>
+          <p className="text-muted-foreground mt-1">
+            Select your services below
+          </p>
+        </section>
 
-      {/* Success Popup */}
-      <SuccessPopup
-        isVisible={showSuccess}
-        onClose={() => setShowSuccess(false)}
-        title="Booking Confirmed!"
-        message="Your appointment has been scheduled"
-      />
-    </AppShell>
+        {/* Service Selector Grid */}
+        <section>
+          <h3 className="text-base font-semibold text-foreground mb-3">
+            Services
+          </h3>
+          <div className="grid grid-cols-2 gap-3">
+            {services.map((service) => {
+              const isSelected = selectedServices.includes(service.id);
+              return (
+                <button
+                  key={service.id}
+                  onClick={() => toggleService(service.id)}
+                  className={`relative text-left p-4 rounded-[20px] transition-all duration-200 active:scale-[0.98] ${
+                    isSelected
+                      ? "bg-primary text-primary-foreground shadow-soft-lg"
+                      : "bg-card text-card-foreground shadow-soft hover:shadow-soft-lg"
+                  }`}
+                >
+                  {isSelected && (
+                    <div className="absolute top-3 right-3 w-5 h-5 rounded-full bg-accent flex items-center justify-center">
+                      <Check size={12} className="text-accent-foreground" />
+                    </div>
+                  )}
+                  <p className="font-semibold text-[15px] mb-2 pr-6">{service.name}</p>
+                  <div className="flex items-center gap-1.5 text-xs opacity-80 mb-1">
+                    <Clock size={12} />
+                    <span>{service.duration}</span>
+                  </div>
+                  <p className="text-lg font-bold">{service.price}</p>
+                </button>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* Barber Selector */}
+        <section>
+          <h3 className="text-base font-semibold text-foreground mb-3">
+            Choose your barber
+          </h3>
+          <div className="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-hide">
+            {barbers.map((barber) => {
+              const isSelected = selectedBarber === barber.id;
+              return (
+                <button
+                  key={barber.id}
+                  onClick={() => setSelectedBarber(barber.id)}
+                  className={`flex-shrink-0 flex flex-col items-center p-3 rounded-[20px] transition-all duration-200 active:scale-[0.98] min-w-[90px] ${
+                    isSelected
+                      ? "bg-primary shadow-soft-lg"
+                      : "bg-card shadow-soft hover:shadow-soft-lg"
+                  }`}
+                >
+                  {/* Avatar */}
+                  <div
+                    className={`w-14 h-14 rounded-full flex items-center justify-center mb-2 text-lg font-bold ${
+                      isSelected
+                        ? "bg-primary-foreground/20 text-primary-foreground"
+                        : "bg-primary/10 text-primary"
+                    }`}
+                  >
+                    {barber.name.charAt(0)}
+                  </div>
+
+                  {/* Name */}
+                  <p
+                    className={`font-medium text-sm mb-1 ${
+                      isSelected ? "text-primary-foreground" : "text-foreground"
+                    }`}
+                  >
+                    {barber.name}
+                  </p>
+
+                  {/* Rating Pill */}
+                  <div
+                    className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${
+                      isSelected
+                        ? "bg-accent text-accent-foreground"
+                        : "bg-accent/20 text-accent-foreground"
+                    }`}
+                  >
+                    <Star size={10} className="fill-current" />
+                    <span>{barber.rating}</span>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* Selected Summary */}
+        {selectedServices.length > 0 && (
+          <section>
+            <Card className="border border-primary/20">
+              <p className="text-sm text-muted-foreground mb-1">Selected</p>
+              <p className="font-semibold text-foreground">
+                {selectedServices.length} service{selectedServices.length > 1 ? "s" : ""} selected
+                {selectedBarber && ` with ${barbers.find(b => b.id === selectedBarber)?.name}`}
+              </p>
+              <p className="text-lg font-bold text-primary mt-1">
+                $
+                {selectedServices.reduce((total, id) => {
+                  const service = services.find((s) => s.id === id);
+                  return total + parseInt(service?.price.replace("$", "") || "0");
+                }, 0)}
+              </p>
+            </Card>
+          </section>
+        )}
+      </main>
+
+      {/* Sticky Bottom CTA */}
+      <div className="fixed bottom-0 left-0 right-0 px-4 py-4 bg-[#E7ECF0]/95 backdrop-blur-sm z-20">
+        <div className="max-w-md mx-auto">
+          <PrimaryButton
+            fullWidth
+            disabled={!canProceed}
+            className="shadow-soft-lg"
+          >
+            Choose date
+          </PrimaryButton>
+        </div>
+      </div>
+    </div>
   );
 }
