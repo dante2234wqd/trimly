@@ -1,65 +1,298 @@
-import Image from "next/image";
+"use client";
+
+import { useState } from "react";
+import {
+  AppShell,
+  TopBar,
+  Card,
+  PrimaryButton,
+  ListItemRow,
+  Badge,
+  StatCard,
+  AvatarRow,
+  FloatingBottomNav,
+  ModalSheet,
+  Toast,
+  SuccessPopup,
+} from "@/components/trimly";
+import {
+  Bell,
+  Scissors,
+  Clock,
+  Star,
+  Calendar,
+  MapPin,
+  CreditCard,
+  Settings,
+  TrendingUp,
+} from "lucide-react";
+
+// Mock data
+const upcomingAppointment = {
+  barber: "Marcus Johnson",
+  service: "Haircut + Beard Trim",
+  date: "Today, 2:30 PM",
+  location: "Downtown Studio",
+  price: "$45",
+};
+
+const topBarbers = [
+  { name: "Marcus Johnson", rating: "4.9", specialty: "Fades & Designs", badge: "VIP" },
+  { name: "David Chen", rating: "4.8", specialty: "Classic Cuts", badge: null },
+  { name: "James Wilson", rating: "4.7", specialty: "Beard Styling", badge: null },
+];
+
+const services = [
+  { name: "Haircut", price: "$30", duration: "30 min", icon: Scissors },
+  { name: "Beard Trim", price: "$15", duration: "15 min", icon: Scissors },
+  { name: "Full Service", price: "$45", duration: "45 min", icon: Star },
+];
 
 export default function Home() {
+  const [activeTab, setActiveTab] = useState("home");
+  const [showBookingSheet, setShowBookingSheet] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+
+  const handleBookNow = () => {
+    setShowBookingSheet(false);
+    setShowSuccess(true);
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <AppShell>
+      {/* Top Bar */}
+      <TopBar
+        title="Trimly"
+        leftAction={
+          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+            <span className="font-bold text-primary text-sm">T</span>
+          </div>
+        }
+        rightAction={
+          <button
+            onClick={() => setShowToast(true)}
+            className="w-10 h-10 rounded-full bg-card shadow-soft flex items-center justify-center"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+            <Bell size={20} className="text-foreground" />
+          </button>
+        }
+      />
+
+      <main className="px-4 space-y-6">
+        {/* Welcome Section */}
+        <section>
+          <h2 className="text-2xl font-bold text-foreground mb-1">
+            Good afternoon, Alex
+          </h2>
+          <p className="text-muted-foreground">Ready for your next fresh cut?</p>
+        </section>
+
+        {/* Stats Row */}
+        <section className="grid grid-cols-2 gap-4">
+          <StatCard
+            icon={<Calendar size={20} />}
+            label="Appointments"
+            value="12"
+            trend={{ value: "3 this month", positive: true }}
+            accentColor="primary"
+          />
+          <StatCard
+            icon={<TrendingUp size={20} />}
+            label="Loyalty Points"
+            value="850"
+            trend={{ value: "50 to VIP", positive: true }}
+            accentColor="accent"
+          />
+        </section>
+
+        {/* Upcoming Appointment */}
+        <section>
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-lg font-semibold text-foreground">
+              Upcoming Appointment
+            </h3>
+            <Badge variant="success">Confirmed</Badge>
+          </div>
+
+          <Card className="space-y-4">
+            <AvatarRow
+              name={upcomingAppointment.barber}
+              subtitle={upcomingAppointment.service}
+              badge="VIP"
+              badgeVariant="accent"
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+
+            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+              <div className="flex items-center gap-1.5">
+                <Clock size={16} />
+                <span>{upcomingAppointment.date}</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <MapPin size={16} />
+                <span>{upcomingAppointment.location}</span>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between pt-2 border-t border-border">
+              <span className="text-lg font-bold text-foreground">
+                {upcomingAppointment.price}
+              </span>
+              <PrimaryButton size="sm" variant="secondary">
+                Reschedule
+              </PrimaryButton>
+            </div>
+          </Card>
+        </section>
+
+        {/* Top Barbers */}
+        <section>
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-lg font-semibold text-foreground">Top Barbers</h3>
+            <button className="text-sm text-primary font-medium">See all</button>
+          </div>
+
+          <Card padding="sm">
+            {topBarbers.map((barber, index) => (
+              <AvatarRow
+                key={barber.name}
+                name={barber.name}
+                subtitle={`${barber.specialty} • ${barber.rating} ★`}
+                badge={barber.badge || undefined}
+                badgeVariant="accent"
+                onClick={() => setShowBookingSheet(true)}
+                size="md"
+              />
+            ))}
+          </Card>
+        </section>
+
+        {/* Quick Services */}
+        <section>
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-lg font-semibold text-foreground">
+              Quick Book
+            </h3>
+          </div>
+
+          <div className="grid grid-cols-3 gap-3">
+            {services.map((service) => (
+              <Card
+                key={service.name}
+                className="text-center cursor-pointer hover:shadow-soft-lg transition-shadow"
+                onClick={() => setShowBookingSheet(true)}
+              >
+                <div className="w-10 h-10 rounded-[12px] bg-primary/10 flex items-center justify-center mx-auto mb-2">
+                  <service.icon size={20} className="text-primary" />
+                </div>
+                <p className="font-medium text-foreground text-sm">
+                  {service.name}
+                </p>
+                <p className="text-xs text-muted-foreground">{service.price}</p>
+              </Card>
+            ))}
+          </div>
+        </section>
+
+        {/* Settings List Demo */}
+        <section>
+          <h3 className="text-lg font-semibold text-foreground mb-3">
+            Quick Actions
+          </h3>
+          <Card padding="none">
+            <ListItemRow
+              title="Payment Methods"
+              subtitle="Manage your cards"
+              leftIcon={<CreditCard size={20} />}
+              showArrow
+              onClick={() => {}}
+            />
+            <div className="h-px bg-border mx-4" />
+            <ListItemRow
+              title="Preferences"
+              subtitle="Notifications, language"
+              leftIcon={<Settings size={20} />}
+              showArrow
+              onClick={() => {}}
+            />
+          </Card>
+        </section>
+
+        {/* Button Showcase */}
+        <section>
+          <h3 className="text-lg font-semibold text-foreground mb-3">
+            Book Your Next Cut
+          </h3>
+          <div className="space-y-3">
+            <PrimaryButton fullWidth onClick={() => setShowBookingSheet(true)}>
+              Book Appointment
+            </PrimaryButton>
+            <PrimaryButton fullWidth variant="accent">
+              Redeem VIP Reward
+            </PrimaryButton>
+          </div>
+        </section>
       </main>
-    </div>
+
+      {/* Bottom Navigation */}
+      <FloatingBottomNav activeTab={activeTab} onTabChange={setActiveTab} />
+
+      {/* Booking Modal Sheet */}
+      <ModalSheet
+        isOpen={showBookingSheet}
+        onClose={() => setShowBookingSheet(false)}
+        title="Book Appointment"
+      >
+        <div className="space-y-4">
+          <AvatarRow
+            name="Marcus Johnson"
+            subtitle="Fades & Designs Specialist"
+            badge="VIP"
+            badgeVariant="accent"
+            size="lg"
+          />
+
+          <div className="space-y-2">
+            <h4 className="font-medium text-foreground">Select Service</h4>
+            {services.map((service) => (
+              <Card
+                key={service.name}
+                className="flex items-center justify-between cursor-pointer hover:bg-muted/50 transition-colors"
+              >
+                <div>
+                  <p className="font-medium text-foreground">{service.name}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {service.duration}
+                  </p>
+                </div>
+                <span className="font-semibold text-primary">{service.price}</span>
+              </Card>
+            ))}
+          </div>
+
+          <div className="pt-4">
+            <PrimaryButton fullWidth onClick={handleBookNow}>
+              Confirm Booking
+            </PrimaryButton>
+          </div>
+        </div>
+      </ModalSheet>
+
+      {/* Toast */}
+      <Toast
+        isVisible={showToast}
+        onClose={() => setShowToast(false)}
+        message="You have 2 new notifications"
+        variant="info"
+      />
+
+      {/* Success Popup */}
+      <SuccessPopup
+        isVisible={showSuccess}
+        onClose={() => setShowSuccess(false)}
+        title="Booking Confirmed!"
+        message="Your appointment has been scheduled"
+      />
+    </AppShell>
   );
 }
