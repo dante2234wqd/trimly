@@ -9,3 +9,5 @@ export { AvatarRow } from "./AvatarRow";
 export { FloatingBottomNav } from "./FloatingBottomNav";
 export { ModalSheet } from "./ModalSheet";
 export { Toast, SuccessPopup } from "./Toast";
+export { AuthInput } from "./AuthInput";
+export { SocialButton } from "./SocialButton";
