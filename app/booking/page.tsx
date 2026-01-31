@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { ArrowLeft, User, Clock, Check, Star } from "@/components/trimly/Icons";
 import { Card, Badge, PrimaryButton } from "@/components/trimly";
 
@@ -27,7 +28,7 @@ const barbers = [
   { id: 5, name: "Miguel", rating: 4.6, avatar: null },
 ];
 
-export default function Home() {
+export default function BookingPage() {
   const [selectedServices, setSelectedServices] = useState<number[]>([]);
   const [selectedBarber, setSelectedBarber] = useState<number | null>(null);
 
@@ -40,15 +41,16 @@ export default function Home() {
   const canProceed = selectedServices.length > 0;
 
   return (
-    <div className="min-h-screen min-h-dvh w-full bg-[#E7ECF0] flex flex-col">
+    <div className="min-h-screen min-h-dvh w-full bg-[#E7ECF0] flex flex-col pb-32">
       {/* Top Bar */}
       <header className="sticky top-0 z-10 bg-[#E7ECF0]/95 backdrop-blur-sm">
         <div className="flex items-center justify-between px-4 py-4">
-          <button
+          <Link
+            href="/"
             className="w-10 h-10 rounded-full bg-card shadow-soft flex items-center justify-center"
           >
             <ArrowLeft size={20} className="text-foreground" />
-          </button>
+          </Link>
 
           <div className="flex flex-col items-center">
             <h1 className="text-lg font-bold text-foreground">{shopInfo.name}</h1>
@@ -63,7 +65,7 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="flex-1 px-4 space-y-6 pb-32">
+      <main className="flex-1 px-4 space-y-6">
         {/* Section Title */}
         <section>
           <h2 className="text-2xl font-bold text-foreground">
@@ -186,7 +188,7 @@ export default function Home() {
       </main>
 
       {/* Sticky Bottom CTA */}
-      <div className="fixed bottom-0 left-0 right-0 px-4 py-4 bg-[#E7ECF0]/95 backdrop-blur-sm z-20">
+      <div className="fixed bottom-24 left-0 right-0 px-4 z-20">
         <div className="max-w-md mx-auto">
           <PrimaryButton
             fullWidth
